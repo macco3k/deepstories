@@ -35,7 +35,7 @@ stories). For the same reason, the use of an episodic memory appears reasonable.
 ## Dataset
 As a dataset, we want to collect adventures from http://ifdb.tads.org/. As we are going to build a generative model, we need a base corpus to train the model on. This
 means we need adventures with at least one walkthrough available, so we can play them automatically. This would allow the supervised learning strategy outline previously.
-To generate the training data, games will be automatically playes by the agent, generating a text output consisting of the <state, action> pairs. In order to convert the text to
+To generate the training data, games will be automatically played by the agent, generating a text output consisting of the <state, action> pairs. In order to convert the text to
 a vector representation, the use of word-embeddings seems natural.
 
 ## Challenges
@@ -51,9 +51,9 @@ For this last question, two main format exists for interactive fiction material.
 could provide the basis for the agent (https://github.com/realnc/frobtads).
 
 ## References
-[1] https://www.intellimedia.ncsu.edu/wp-content/uploads/wang-aiide-2017.pdf
-[2] https://www.researchgate.net/profile/Xiaodong_He2/publication/306093902_Deep_Reinforcement_Learning_with_a_Natural_Language_Action_Space/links/57c4656b08aee465796c1fa3.pdf
-[3] http://www.eecs.qmul.ac.uk/~josh/documents/2017/Chourdakis%20Reiss%20-%20CC-NLG.pdf
-[4] http://papers.nips.cc/paper/6233-hierarchical-deep-reinforcement-learning-integrating-temporal-abstraction-and-intrinsic-motivation.pdf
-[5] http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.696.7314&rep=rep1&type=pdf
-[6] https://arxiv.org/pdf/1506.07285.pdf
+1. https://www.intellimedia.ncsu.edu/wp-content/uploads/wang-aiide-2017.pdf
+2. https://www.researchgate.net/profile/Xiaodong_He2/publication/306093902_Deep_Reinforcement_Learning_with_a_Natural_Language_Action_Space/links/57c4656b08aee465796c1fa3.pdf
+3. http://www.eecs.qmul.ac.uk/~josh/documents/2017/Chourdakis%20Reiss%20-%20CC-NLG.pdf
+4. http://papers.nips.cc/paper/6233-hierarchical-deep-reinforcement-learning-integrating-temporal-abstraction-and-intrinsic-motivation.pdf
+5. http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.696.7314&rep=rep1&type=pdf
+6. https://arxiv.org/pdf/1506.07285.pdf
