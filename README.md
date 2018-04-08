@@ -1,5 +1,3 @@
-# Deep Stories
-
 ## Scope and Goals
 From wikipedia (https://en.wikipedia.org/wiki/Interactive_fiction):
 
