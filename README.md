@@ -47,6 +47,10 @@ Quite naturally, a number of questions arise:
   beat the game, to help the generation process?
 * how do we design the hierarchical architecture? Do we want a single, deep+tall network or a set of loosely interacting "controllers" (see also [4])?
 * how do we represent the input to the model?
+* how to generate the training data? 
+
+For this last question, two main format exists for interactive fiction material. For one, there actually exists a dedicated learning library written in python (https://github.com/danielricks/autoplay). For the second format, a text-only interpreter
+could provide the basis for the agent (https://github.com/realnc/frobtads).
 
 ## References
 [1] https://www.intellimedia.ncsu.edu/wp-content/uploads/wang-aiide-2017.pdf
