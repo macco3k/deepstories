@@ -1,7 +1,7 @@
 ## Scope and Goals
 From wikipedia (https://en.wikipedia.org/wiki/Interactive_fiction):
 
-> Interactive fiction, often abbreviated IF, is software simulating environments in which players use text commands to control characters and influence the environment. Works in this form can be understood as literary narratives, either in the form of Interactive narratives or Interactive narrations. These works can also be understood as a form of video game,[1] either in the form of an adventure game or role-playing game.
+> Interactive fiction, often abbreviated IF, is software simulating environments in which players use text commands to control characters and influence the environment. Works in this form can be understood as literary narratives, either in the form of Interactive narratives or Interactive narrations. These works can also be understood as a form of video game, either in the form of an adventure game or role-playing game.
 
 Interactive Fiction provides a challenging environment for machine learning, and specifically nlp. 
 For one, as the name suggests, we are in the realm of narrative. This implies a _story_, with a main plot and a number of subplots, characters, etc.
@@ -22,38 +22,28 @@ _Can we train an ANN to generate an interactive fiction based on a number of ava
 
 Of course, this requires specifying a number of elements. Luckily, some previous work already exists on the subject (a review of a number of approaches is also available in [5],
 although more centered around the authorial side of things).
-From our (small) research, the main attempts almost always include a "deep" neural architecture (usually based on LSTMs) to account for the understanding of scenes (see e.g. [2]).
-However, these efforts mainly focus on training an agent to play the game, as opposed to actually create it. In this regard, [3] provides some inspiration,
-adopting a strategy reminiscent of GANs (generative adversarial networks).
-On top of everything the RL (Reinforcement Learning) framework also provides a nice way of encoding some exploratory behaviour ([4]), which could be used to further improve the
-creativity of the narrative.
-
-One peculiar aspect that we wish to investigate specifically is the application of a hierarchical approach to the above. Indeed, each game consists of sequences of <scene, action> 
-pairs. This suggests the use of a multi-scale architecture, capable of working on multiple temporal scales (e.g. having an overarching plot interspersed with a number of minor
-stories). For the same reason, the use of an episodic memory appears reasonable.
+The main attempts almost always include a deep neural architecture (usually based on LSTMs) to account for the understanding of scenes (see e.g. [2]), coupled with a reinforcement learning module. However, these efforts mainly focus on training an agent to play the game, as opposed to actually create it. In this regard, [3] provides some inspiration, adopting a strategy reminiscent of GANs (generative adversarial networks). Alas, while the reinforcement learning addition is interesting -- in that it provides a way of encoding some exploratory behaviour ([4]) which could be used to further improve the creativity of the narrative -- we do not currently see any easy way to embed it in our architecture, especially because of a lack of scores or rewards in the dataset we are going to use (see next paragraph for more detail about it). Also, the approach in [3] relies on simple recombination of parts of text, thus lacking a truly generative flavour.
 
 ## Dataset
-As a dataset, we want to collect adventures from http://ifdb.tads.org/. As we are going to build a generative model, we need a base corpus to train the model on. This
-means we need adventures with at least one walkthrough available, so we can play them automatically. This would allow the supervised learning strategy outline previously.
-To generate the training data, games will be automatically played by the agent, generating a text output consisting of the <state, action> pairs. In order to convert the text to
-a vector representation, the use of word-embeddings seems natural.
+As a dataset, we will use a set of transcripts collected by the [ClubFloyd](http://www.allthingsjacq.com/interactive_fiction.html#clubfloyd) people. These are playthroughs of a number of IF games played over the course of more than 20 years. The recovered set containes 250+ transcripts. Although not all of the text is usable, as it containes meta-commands and a lot of chat between players, it still provides a wealth of data which would be very hard to collect otherwise (e.g. by actually writing an artificial player).
 
-## Challenges
-Quite naturally, a number of questions arise:
+## Design
+In partial contrast with the approaches presented in the introduction, we would like to framework the problem as a sequence-to-sequence task (see [6], [7]). Indeed, each game can be though of as comprising a series of <scene_before, action, scene_after> triples. The network would then learn how to "translate" the input sequence <scene_before> + <action> into the output sequence <scene_after>. In addition, one peculiar aspect that we wish to investigate is the application of a hierarchical approach. This multi-scale architecture should be capable of working on multiple temporal scales (e.g. learning dependencies among scenes). For the same reason, the use of an episodic memory appears reasonable (see [9]).
 
-* how do we define reward exactly? Are different rewards issued at different time scales? Can we use a "player policy", i.e. the sequence of actions to
-  beat the game, to help the generation process?
-* how do we design the hierarchical architecture? Do we want a single, deep+tall network or a set of loosely interacting "controllers" (see also [4])?
-* how do we represent the input to the model?
-* how to generate the training data? 
+Quite naturally, a number of challenges arise. Some are listed below.
 
-For this last question, two main format exists for interactive fiction material. For one, there actually exists a dedicated learning library written in python (https://github.com/danielricks/autoplay). For the second format, a text-only interpreter
-could provide the basis for the agent (https://github.com/realnc/frobtads).
+* The pre-processing phase is going to be crucial to have as clean data as possible. Despite some commonalities among the playthroughs, there are many exceptions to deal with (e.g. about and version commands, load/save commands, etc.). The better we manage to filter out such "noise", the easier for the network to actually learn from game-text proper.
+* While the use of word embeddings to obtain vector representation for words is common, usual approaches to sequence prediction use a one-hot encoding for the ouput, framing the task a a multi-class classification problem. Unfortunately, this limits the size of the vocabulary usable by the network. Instead of trying to implement efficient approximation to softmax ourselves, we could restate the prediction as a regression problem, in which the network learn to predict the embeddings themselves. This will require the definition of a custom loss function including direction and magnitude.
+* How do we design the hierarchical architecture? Do we want a single, deep+tall network or a set of loosely interacting "controllers" (see also [4])?
+* What is the expected training time (and power) to generate meaningful text?
+* How do we evaluate the results? As there is no standard metric for this task, we will have to devise one ourself. Apart from subjective human evaluations, we could think of a way to measure the coherence of the generated story. E.g. whether generated scenes actually reference the previous object, or if particular commands (e.g. look) behave as one would expect from an actual IF game. In this sense, it could be useful to define a template of "sensible" replies, assigning a score to the network's prediction. Note how we could also define a simple error measure computing the difference between predicted and actual embeddings for each test triple, though we don't deem this very indicative of whether the task is being solved or not, as there may be many equivalent formulations for the next scene, all perfectly compatible with the same input.
 
 ## References
-1. https://www.intellimedia.ncsu.edu/wp-content/uploads/wang-aiide-2017.pdf
-2. https://www.researchgate.net/profile/Xiaodong_He2/publication/306093902_Deep_Reinforcement_Learning_with_a_Natural_Language_Action_Space/links/57c4656b08aee465796c1fa3.pdf
-3. http://www.eecs.qmul.ac.uk/~josh/documents/2017/Chourdakis%20Reiss%20-%20CC-NLG.pdf
-4. http://papers.nips.cc/paper/6233-hierarchical-deep-reinforcement-learning-integrating-temporal-abstraction-and-intrinsic-motivation.pdf
-5. http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.696.7314&rep=rep1&type=pdf
-6. https://arxiv.org/pdf/1506.07285.pdf
+1. https://www.researchgate.net/profile/Xiaodong_He2/publication/306093902_Deep_Reinforcement_Learning_with_a_Natural_Language_Action_Space/links/57c4656b08aee465796c1fa3.pdf
+1. http://www.eecs.qmul.ac.uk/~josh/documents/2017/Chourdakis%20Reiss%20-%20CC-NLG.pdf
+1. http://papers.nips.cc/paper/6233-hierarchical-deep-reinforcement-learning-integrating-temporal-abstraction-and-intrinsic-motivation.pdf
+1. http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.696.7314&rep=rep1&type=pdf
+1. https://arxiv.org/pdf/1506.07285.pdf
+1. http://papers.nips.cc/paper/5346-sequence-to-sequence-learning-with-neural-networks.pdf
+1. https://arxiv.org/abs/1609.08144
+1. https://arxiv.org/pdf/1506.07285.pdf
