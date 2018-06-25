@@ -52,15 +52,15 @@ Quite naturally, a number of challenges arise. Some are listed below.
 
 # Author Contributions 
 ### Project
-Preprocessing; Daniele, Simge
-Baseline LSTM Network: Daniele
-Beam Search; Simge
-Attention Network; Daniele
+Preprocessing; Daniele, Simge . 
+Baseline LSTM Network: Daniele . 
+Beam Search; Simge . 
+Attention Network; Daniele . 
 
 ### Report
-Abstract; Simge 
-Introduction; Simge
-Related Work; Simge, Daniele
-Project Description; Simge, Daniele
-Summary; Daniele
-Consclusion; Daniele
+Abstract; Simge . 
+Introduction; Simge . 
+Related Work; Simge, Daniele . 
+Project Description; Simge, Daniele . 
+Summary; Daniele . 
+Consclusion; Daniele . 
