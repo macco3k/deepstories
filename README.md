@@ -47,3 +47,20 @@ Quite naturally, a number of challenges arise. Some are listed below.
 1. http://papers.nips.cc/paper/5346-sequence-to-sequence-learning-with-neural-networks.pdf
 1. https://arxiv.org/abs/1609.08144
 1. https://arxiv.org/pdf/1506.07285.pdf
+
+
+
+# Author Contributions 
+### Project
+Preprocessing; Daniele, Simge
+Baseline LSTM Network: Daniele
+Beam Search; Simge
+Attention Network; Daniele
+
+### Report
+Abstract; Simge 
+Introduction; Simge
+Related Work; Simge, Daniele
+Project Description; Simge, Daniele
+Summary; Daniele
+Consclusion; Daniele
